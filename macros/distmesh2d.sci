@@ -71,7 +71,7 @@ function [p, t]=distmesh2d(fd,fh,h0,bbox,pfix,varargin)
   r0 = 1  ./  fh(p, varargin(:)) .^ 2; // Probability to keep point
   p = p(rand(size(p, 1), 1) < r0  ./ max(r0), :); // Rejection method
   if ~isempty(pfix),
-    p = setdiff(p, pfix, 'rows');
+    p = setdiff(p, pfix, which= 'rows');
   end // Remove duplicated nodes
   pfix = unique(pfix, which= 'rows');nfix = size(pfix, 1);
   p = [pfix;p]; // Prepend fix points
@@ -103,7 +103,7 @@ function [p, t]=distmesh2d(fd,fh,h0,bbox,pfix,varargin)
       else
 	trisurf(t,p(:,1),p(:,2),p(:,3));
       end
-      // drawnow
+      xpause(100000,%t)
     end
     
     // 6. Move mesh points based on bar lengths L and forces F
@@ -143,10 +143,10 @@ function [p, t]=distmesh2d(fd,fh,h0,bbox,pfix,varargin)
       break;
     end
   end
-  
+  pause fin 
   // Clean up and plot final mesh
   printf("fixmesh a revoir unique de matlab n''est pas identique a unique ...
 	 de nsp\n");
   // [p,t] = fixmesh(p, t);
-  simpplot(p, t)
+  // simpplot(p, t)
 endfunction

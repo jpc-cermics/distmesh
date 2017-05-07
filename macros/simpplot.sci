@@ -52,7 +52,7 @@ function simpplot(p,t,expr,bcol,icol,nodes,tris)
 	t = t(any(ismember(t, incl), 2), :);
 	tri1 = tri1(any(ismember(tri1, incl), 2), :);
 	tri2 = surftri(p, t);
-	tri2 = setdiff(tri2, tri1, 'rows');
+	tri2 = setdiff(tri2, tri1, which= 'rows');
 	h = trimesh(tri2, p(:, 1), p(:, 2), p(:, 3));
 	set(h, 'facecolor', icol, 'edgecolor', 'k');
 	hold('on')

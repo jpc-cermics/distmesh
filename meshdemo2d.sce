@@ -17,6 +17,7 @@ function y=fd(p)
 endfunction
 
 [p,t] = distmesh2d(fd, huniform, 0.2, [-1,-1;1,1], []);
+pause xxx;
 
 // echo('off')
 
