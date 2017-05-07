@@ -1,8 +1,6 @@
 //MESHDEMO2d Distmesh2d examples.
 //   Copyright (C) 2004-2012 Per-Olof Persson. See COPYRIGHT.TXT for details.
-
 // rand('state', 1); // Always the same results
-// set(gcf, 'rend', 'z');
 
 function fstats(p,t) 
   fprintf('%d nodes, %d elements, min quality %.2f\n',  ...
@@ -10,19 +8,17 @@ function fstats(p,t)
 endfunction 
 
 fprintf('Uniform Mesh on Unit Circle\n');
-// echo('on')
 
 function y=fd(p)
   y=sqrt(sum(p .^ 2, 2)) - 1;
 endfunction
 
 [p,t] = distmesh2d(fd, huniform, 0.2, [-1,-1;1,1], []);
-pause xxx;
-
-// echo('off')
 
 fstats(p, t);
 fprintf('(press any key)\n\n');pause
+
+// ----------------
 
 fprintf('Rectangle with circular hole, refined at circle boundary\n');
 function y=fd(p)
@@ -35,6 +31,8 @@ endfunction
 [p,t] = distmesh2d(fd, fh, 0.05, [-1,-1;1,1], [-1,-1;-1,1;1,-1;1,1]);
 fstats(p, t);
 fprintf('(press any key)\n\n');pause
+
+// ----------------
 
 fprintf('Polygon\n');
 pv = [-0.4,-0.5;0.4,-0.2;0.4,-0.7;1.5,-0.4;0.9,0.1;
