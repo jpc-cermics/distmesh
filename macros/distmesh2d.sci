@@ -115,7 +115,7 @@ function [p, t]=distmesh2d(fd,fh,h0,bbox,pfix,varargin)
     
     // Density control - remove points that are too close
     if mod(count, densityctrlfreq) == 0 & any(L0 > 2 * L)
-      p(setdiff(reshape(bars(L0 > 2 * L, :), [], 1), (1 : nfix)), :) = [];
+      p(setdiff(reshape(bars(L0 > 2 * L, :), -1, 1), (1 : nfix)), :) = [];
       N = size(p, 1);pold = %inf;
       continue;
     end

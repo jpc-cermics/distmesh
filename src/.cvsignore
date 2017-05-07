@@ -1,0 +1,8 @@
+*.o
+*.so
+*.lo
+*.la
+.libs 
+loader.sce 
+Makelib 
+Path.incl

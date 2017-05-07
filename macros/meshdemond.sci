@@ -1,7 +1,6 @@
 function meshdemond()
-  
 //MESHDEMOND distmeshnd examples.
-//   Copyright (C) 2004-2012 Per-Olof Persson. See COPYRIGHT.TXT for details.
+// Copyright (C) 2004-2012 Per-Olof Persson. See COPYRIGHT.TXT for details.
   
   rand('state', 1); // Always the same results
   set(gcf, 'rend', 'opengl');
@@ -14,20 +13,14 @@ function meshdemond()
   print('(10) Cylinder with hole')
   [p,t] = distmeshnd(fd10, fh10, 0.1, [-1,-1,-1;1,1,1], []);
   post(p, t)
-  
-  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  
-  
 endfunction
+
 function post(p,t)
   print(sprintf('   (press any key)'))
   print(' ')
   pause
-  
-  //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  
-  
 endfunction
+
 function d=fd10(p)
   r = sqrt(p(:, 1) .^ 2 + p(:, 2) .^ 2);
   z = p(:, 3);
@@ -44,9 +37,8 @@ function d=fd10(p)
   d(ix) = d5(ix);
   
   d = ddiff(d, dsphere(p, 0, 0, 0, 0.5));
-  
-  
 endfunction
+
 function h=fh10(p)
   h1 = 4 * sqrt(sum(p .^ 2, 2)) - 1;
   h = min(h1, 2);

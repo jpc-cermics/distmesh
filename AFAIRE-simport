@@ -29,9 +29,9 @@ unique(sort(bars, 2), which= 'rows'); // Bars as node pairs
 
 idem pour setdiff
 
-
-
 sort(x,2) -> sort(x,type="c",dir="i")
 sort est increasing par defaut en Matlab.
+
+Dans reshape une dimension [] equivaut a -1 dans nsp
 
 jpc 2017
