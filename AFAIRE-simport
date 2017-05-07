@@ -1,0 +1,33 @@
+
+une fonction sans arguments est traduite
+function poo
+endfunction
+
+Il faut des parentheses en nsp
+
+Il faut éliminer les @ des noms de variables
+
+@huniform
+
+[x,x,y]=poo
+n'est pas licite en nsp
+
+
+les \\n generes dans les chaines devraient etre des \n en nsp
+
+eps -> %eps
+
+Pourquoi varargin{:} n'est pas identique a varargin(:) pour les listes ?
+varargin{:} n'est pas correct il faut varargin(:) 
+
+feval(fd, p, varargin(:)) devrait etre traduit en
+fd(p,varargin(:));
+
+deuxieme argument de unique avec which
+
+unique(sort(bars, 2), which= 'rows'); // Bars as node pairs
+      
+sort(x,2) -> sort(x,type="c",dir="i")
+sort est increasing par defaut en Matlab.
+
+jpc 2017
