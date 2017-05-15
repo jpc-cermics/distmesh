@@ -1,4 +1,4 @@
-libname  = 'libnspqhull' 	
+libname  = 'libdistmesh' 	
 libtitle='distmesh:';
 
 // macros. 

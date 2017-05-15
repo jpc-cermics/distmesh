@@ -85,7 +85,7 @@ function [p, t]=distmesh2d(fd,fh,h0,bbox,pfix,varargin)
     // 3. Retriangulation by the Delaunay algorithm
     if max(sqrt(sum((p - pold) .^ 2, 2)) / h0) > ttol // Any large movement?
       pold = p; // Save current positions
-      t = delaunay(p); // List of triangles
+      t = delaunayn(p); // List of triangles
       pmid = (p(t(:, 1), :) + p(t(:, 2), :) + p(t(:, 3), :)) / 3;
       // Compute centroids
       t = t( fd(pmid,varargin(:)) < -geps, :);

@@ -52,7 +52,7 @@ function [p, t]=distmeshnd(fdist,fh,h,box,fix,varargin)
     // 3. Retriangulation by Delaunay
     if max(sqrt(sum((p - p0) .^ 2, 2))) > ttol * h
       p0 = p;
-      t = delaunay(p);
+      t = delaunayn(p);
       pmid = zeros(size(t, 1), dim);
       for ii = 1: dim + 1
         pmid = pmid + p(t(:, ii), :) / (dim + 1);
