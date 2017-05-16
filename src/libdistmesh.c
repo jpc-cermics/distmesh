@@ -4,9 +4,15 @@
 
 
 extern function int_dsegment;
+extern function int_dellipse;
+extern function int_dellipsoid;
+extern function int_trisurfupd;
 
 static OpWrapTab libdistmesh_func[] = {
   {"dsegment", int_dsegment,NULL},
+  {"dellipse", int_dellipse,NULL},
+  {"dellipsoid", int_dellipsoid,NULL},
+  {"trisurfupd", int_trisurfupd,NULL},
   {(char *) 0, NULL, NULL},
 };
 int libdistmesh_Interf (int i, Stack stack, int rhs, int opt, int lhs)

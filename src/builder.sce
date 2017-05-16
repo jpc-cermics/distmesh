@@ -10,13 +10,17 @@ end
 ilib_name  = 'libdistmesh' 		// interface library name 
 
 // objects files (but do not give mexfiles here)
-files = ['dsegment.o'];
+files = ['dsegment.o','dellipse.o','dellipsoid.o','trisurfupd.o'];
 
 // other libs needed for linking (must be shared library names)
 libs =[];
 
 // table of (scilab_name,interface-name or mexfile-name, type) 
-table =['dsegment','int_dsegment'];
+table =['dsegment','int_dsegment';
+	'dellipse','int_dellipse';
+	'dellipsoid','int_dellipsoid';
+	'trisurfupd','int_trisurfupd'];
+
 ldflags =""// "`pkg-config lp_solve --libs`";
 cflags = ""// "`pkg-config lp_solve --cflags`"
 

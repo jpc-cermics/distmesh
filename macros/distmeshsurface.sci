@@ -33,6 +33,8 @@ function [p, t]=distmeshsurface(fd,fh,h0,bbox,varargin)
 //      [p,t]=distmeshsurface(fd,@huniform,0.2,[-2.1,-1.1,-1.6; 2.1,1.1,1.6]);
   
 //   Copyright (C) 2004-2012 Per-Olof Persson. See COPYRIGHT.TXT for details.
+
+  printf("Revoir  trisurfupd pour mettre des types entiers \n");
   
   dptol = 1e-4;ttol = .1;Fscale = 1.2;deltat = .2;deps = sqrt(eps) * h0;
   
