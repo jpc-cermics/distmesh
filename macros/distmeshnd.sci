@@ -13,8 +13,8 @@ function [p, t]=distmeshnd(fdist,fh,h,box,fix,varargin)
 //
 //   Example: Unit ball
 //      dim=3;
-//      d=inline('sqrt(sum(p.^2,2))-1','p');
-//      [p,t]=distmeshnd(d,@huniform,0.2,[-ones(1,dim);ones(1,dim)],[]);
+//      function y=d_nd(p); y=sqrt(sum(p.^2,2))-1;endfunction
+//      [p,t]=distmeshnd(d_nd,huniform,0.2,[-ones(1,dim);ones(1,dim)],[]);
 //
 //   See also: DISTMESH2D, DELAUNAYN, TRIMESH, MESHDEMOND.
   

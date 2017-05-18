@@ -1,4 +1,8 @@
 
+Reste a clarifier le pb avec les volumes.
+surftri devrait donner le volume
+ou le bord pour une maillage d'une surface2d
+
 une fonction sans arguments est traduite
 function poo
 endfunction
