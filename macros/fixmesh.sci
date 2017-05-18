@@ -2,7 +2,6 @@ function [p, t, pix]=fixmesh(p,t,ptol)
 //FIXMESH  Remove duplicated/unused nodes and fix element orientation.
 //   [P,T]=FIXMESH(P,T)
 //   Copyright (C) 2004-2012 Per-Olof Persson. See COPYRIGHT.TXT for details.
-  pause xxx
   if nargin < 3,
     ptol = 1024 * %eps;
   end
@@ -11,12 +10,11 @@ function [p, t, pix]=fixmesh(p,t,ptol)
   end
   
   snap = max(max(p, 'r') - min(p, 'r')) * ptol;
-  [foo,ix,jx] = unique(round(p / snap) * snap, which='rows');
+  [foo,ix,jx] = unique(round(p / snap) * snap, which='rows',mtlb_mode=%t);
   p = p(ix, :);
-  
   if nargin >= 2
     t = reshape(jx(t), size(t));
-    
+    pause fixmesh-a-revoir
     [pix,ix1,jx1] = unique(t);
     t = reshape(jx1, size(t));
     p = p(pix, :);

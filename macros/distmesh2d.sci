@@ -145,8 +145,7 @@ function [p, t]=distmesh2d(fd,fh,h0,bbox,pfix,varargin)
   end
   pause fin 
   // Clean up and plot final mesh
-  printf("fixmesh a revoir unique de matlab n''est pas identique a unique ...
-	 de nsp\n");
-  // [p,t] = fixmesh(p, t);
-  // simpplot(p, t)
+  printf("fixmesh a revoir unique de matlab n''est pas identique a unique de nsp\n");
+  [p,t] = fixmesh(p, t);
+  simpplot(p, t)
 endfunction
