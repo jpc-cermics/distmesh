@@ -15,7 +15,7 @@ function [p, t]=distmeshnd(fdist,fh,h,box,fix,varargin)
 //      dim=3;
 //      function y=d_nd(p); y=sqrt(sum(p.^2,2))-1;endfunction
 //      [p,t]=distmeshnd(d_nd,huniform,0.2,[-ones(1,dim);ones(1,dim)],[]);
-//
+//      fdist=d_nd;fh=huniform;h=0.2;box=[-ones(1,dim);ones(1,dim)];fix=[];varargin=list();
 //   See also: DISTMESH2D, DELAUNAYN, TRIMESH, MESHDEMOND.
   
 //   Copyright (C) 2004-2012 Per-Olof Persson. See COPYRIGHT.TXT for details.

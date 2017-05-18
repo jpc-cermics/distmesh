@@ -99,9 +99,9 @@ function [p, t]=distmesh2d(fd,fh,h0,bbox,pfix,varargin)
       // patch('vertices', p, 'faces', t, 'edgecol', 'k', 'facecol', [.8,.9,1]);
       printf("A revoir\n");
       if size(p,2) == 2 then 
-	triplot(t,p(:,1),p(:,2));
+	triplot(t',p(:,1),p(:,2));
       else
-	trisurf(t,p(:,1),p(:,2),p(:,3));
+	trisurf(t',p(:,1),p(:,2),p(:,3));
       end
       xpause(100000,%t)
     end
