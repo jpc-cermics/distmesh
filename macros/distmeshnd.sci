@@ -22,7 +22,7 @@ function [p, t]=distmeshnd(fdist,fh,h,box,fix,varargin)
   
   dim = size(box, 2);
   ptol = .001;ttol = .1;L0mult = 1 + .4 / 2 ^ (dim - 1);deltat = .1;
-  geps = 1e-1 * h;deps = sqrt(eps) * h;
+  geps = 1e-1 * h;deps = sqrt(%eps) * h;
   
   // 1. Create initial distribution in bounding box
   if dim == 1
@@ -41,8 +41,8 @@ function [p, t]=distmeshnd(fdist,fh,h,box,fix,varargin)
   end
   
   // 2. Remove points outside the region, apply the rejection method
-  p = p(feval(fdist, p, varargin{:}) < geps, :);
-  r0 = feval(fh, p);
+  p = p( fdist(p, varargin(:)) < geps, :);
+  r0 = fh(p);
   p = [fix;p(rand(size(p, 1), 1) < min(r0) ^ dim  ./ r0 .^ dim, :)];
   N = size(p, 1);
   
@@ -57,14 +57,14 @@ function [p, t]=distmeshnd(fdist,fh,h,box,fix,varargin)
       for ii = 1: dim + 1
         pmid = pmid + p(t(:, ii), :) / (dim + 1);
       end
-      t = t(feval(fdist, pmid, varargin{:}) < -geps, :);
+      t = t( fdist(pmid, varargin(:)) < -geps, :);
       // 4. Describe each edge by a unique pair of nodes
       pair = zeros(0, 2);
       localpairs = nchoosek((1 : dim + 1), 2);
       for ii = 1: size(localpairs, 1)
         pair = [pair;t(:, localpairs(ii, :))];
       end
-      pair = unique(sort(pair, type="c",dir="i"), 'rows');
+      pair = unique(sort(pair, type="c",dir="i"), which= 'rows');
       // 5. Graphical output of the current mesh
       if dim == 2
         trimesh(t, p(:, 1), p(:, 2), zeros(N, 1))
@@ -72,40 +72,37 @@ function [p, t]=distmeshnd(fdist,fh,h,box,fix,varargin)
       elseif dim == 3
         if mod(count, 5) == 0
           simpplot(p, t, 'p(:,2)>0');
-          title(['Retriangulation #',int2str(count)])
-          drawnow
+          title(sprintf('Retriangulation #%d',count));
+          // drawnow
         end
       else 
         print(sprintf('Retriangulation #%d', count))
       end
       count = count + 1;
+      xpause(100000,%t)
     end
     
     // 6. Move mesh points based on edge lengths L and forces F
     bars = p(pair(:, 1), :) - p(pair(:, 2), :);
     L = sqrt(sum(bars .^ 2, 2));
-    L0 = feval(fh, (p(pair(:, 1), :) + p(pair(:, 2), :)) / 2);
+    L0 = fh((p(pair(:, 1), :) + p(pair(:, 2), :)) / 2);
     L0 = L0 * L0mult * (sum(L .^ dim) / sum(L0 .^ dim)) ^ (1 / dim);
     F = max(L0 - L, 0);
     Fbar = [bars,-bars]  .* repmat(F  ./ L, 1, 2 * dim);
-    dp = full(sparse(pair(:, [ones(1, dim),2 * ones(1, dim)]), ones(size( ...
-	pair,  ...
-	1),  ...
-						  1) * [ ...
-						      (1 : dim), ...
-						      (1 : dim) ...
-		   ],  ...
-		     Fbar, N, dim));
+    // 
+    Il = pair(:, [ones(1, dim),2 * ones(1, dim)]);
+    Jl = ones(size(pair,1),1) * [(1 : dim),(1 : dim) ];
+    dp = full(sparse([Il(:),Jl(:)], Fbar(:),[ N, dim]));
     dp((1 : size(fix, 1)), :) = 0;
     p = p + deltat * dp;
     
     // 7. Bring outside points back to the boundary
-    d = feval(fdist, p, varargin{:});ix = d > 0;
+    d = fdist( p, varargin(:));ix = d > 0;
     gradd = zeros(sum(ix), dim);
     for ii = 1: dim
       a = zeros(1, dim);
       a(ii) = deps;
-      d1x = feval(fdist, p(ix, :) + ones(sum(ix), 1) * a, varargin{:});
+      d1x = fdist( p(ix, :) + ones(sum(ix), 1) * a, varargin(:));
       gradd(:, ii) = (d1x - d(ix)) / deps;
     end
     p(ix, :) = p(ix, :) - d(ix) * ones(1, dim)  .* gradd;

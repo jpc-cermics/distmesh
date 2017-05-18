@@ -38,41 +38,45 @@ function simpplot(p,t,expr,bcol,icol,nodes,tris)
     // axis('off')
     // ax = axis;axis(ax * 1.001);
    case 3
-    if nargin < 4 | isempty(bcol),
+    if nargin < 4 || isempty(bcol),
       bcol = [.8,.9,1];
     end
-    if nargin < 5 | isempty(icol),
+    if nargin < 5 || isempty(icol),
       icol = [.9,.8,1];
     end
     
     if size(t, 2) == 4
       tri1 = surftri(p, t);
-      if nargin > 2 & ~isempty(expr)
-	incl = find(eval(expr));
+      if nargin > 2 && ~isempty(expr)
+	incl = find(evstr(expr)); // eval -> evstr
 	t = t(any(ismember(t, incl), 2), :);
 	tri1 = tri1(any(ismember(tri1, incl), 2), :);
 	tri2 = surftri(p, t);
 	tri2 = setdiff(tri2, tri1, which= 'rows');
-	h = trimesh(tri2, p(:, 1), p(:, 2), p(:, 3));
-	set(h, 'facecolor', icol, 'edgecolor', 'k');
+	trimesh(tri2, p(:, 1), p(:, 2), p(:, 3));
+	//set(h, 'facecolor', icol, 'edgecolor', 'k');
 	hold('on')
-	
       end
     else 
       tri1 = t;
-      if nargin > 2 & ~isempty(expr)
+      if nargin > 2 && ~isempty(expr)
 	incl = find(eval(expr));
 	tri1 = tri1(any(ismember(tri1, incl), 2), :);
       end
     end
-    h = trimesh(tri1, p(:, 1), p(:, 2), p(:, 3));
+    trimesh(tri1, p(:, 1), p(:, 2), p(:, 3));
     hold('off')
-    
-    set(h, 'facecolor', bcol, 'edgecolor', 'k');
-    axis('equal')
-    
-    cameramenu
+    //set(h, 'facecolor', bcol, 'edgecolor', 'k');
+    //axis('equal')
+    //cameramenu
   else 
     error('Unimplemented dimension.');
   end
+endfunction
+
+function [I]=ismember(A,B)
+// quick implementation 
+  [C,kA]=intersect(A,B);
+  I=zeros(size(A));
+  I(kA)=1;
 endfunction
