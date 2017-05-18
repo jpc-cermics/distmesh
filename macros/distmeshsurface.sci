@@ -25,8 +25,8 @@ function [p, t]=distmeshsurface(fd,fh,h0,bbox,varargin)
 //      [p,t]=distmeshsurface(fd,fh,0.15,1.1*[-1,-1,-1;1,1,1]);
 //
 //   Example: (Uniform Mesh on Torus)
-//      fd=@(p) (sum(p.^2,2)+.8^2-.2^2).^2-4*.8^2*(p(:,1).^2+p(:,2).^2);
-//      [p,t]=distmeshsurface(fd,@huniform,0.1,[-1.1,-1.1,-.25;1.1,1.1,.25]);
+//      function y=fd(p) ; y=(sum(p.^2,2)+.8^2-.2^2).^2-4*.8^2*(p(:,1).^2+p(:,2).^2);endfunction
+//      [p,t]=distmeshsurface(fd,huniform,0.1,[-1.1,-1.1,-.25;1.1,1.1,.25]);
 //
 //   Example: (Uniform Mesh on Ellipsoid)
 //      fd=@(p) p(:,1).^2/4+p(:,2).^2/1+p(:,3).^2/1.5^2-1;
