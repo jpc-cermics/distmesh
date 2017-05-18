@@ -27,7 +27,7 @@ function [p, t]=uniref(p,t,nref,fd,varargin)
       p = [p;pmid];
      case 2
       pair = [t(:, [1,2]);t(:, [1,3]);t(:, [2,3])];
-      [pair,pairi,pairj] = unique(sort(pair,type="c",dir="i"), 'rows');
+      [pair,pairi,pairj] = unique(sort(pair,type="c",dir="i"), which= 'rows',mtlb_mode =%t);
       pmid = (p(pair(:, 1), :) + p(pair(:, 2), :)) / 2;
       t1 = t(:, 1);
       t2 = t(:, 2);

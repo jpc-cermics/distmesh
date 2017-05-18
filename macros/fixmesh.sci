@@ -15,6 +15,7 @@ function [p, t, pix]=fixmesh(p,t,ptol)
   if nargin >= 2
     t = reshape(jx(t), size(t));
     pause fixmesh-a-revoir
+    printf("unique à revoir\n");
     [pix,ix1,jx1] = unique(t);
     t = reshape(jx1, size(t));
     p = p(pix, :);
