@@ -34,4 +34,9 @@ sort est increasing par defaut en Matlab.
 
 Dans reshape une dimension [] equivaut a -1 dans nsp
 
+On peut preciser dans unique  mtlb_mode =%t
+pour que le troisieme argument soit celui qu'on veut en matlab
+Attention c'est pas fini
+// Using mtlb=%t in unique
+
 jpc 2017

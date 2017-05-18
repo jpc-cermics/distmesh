@@ -20,23 +20,25 @@ static const char mod3x2[3]={2,0,1};
     n[1]=v1[2]*v2[0]-v1[0]*v2[2];					\
     n[2]=v1[0]*v2[1]-v1[1]*v2[0];}
 
-static void tupdate(double *p,int *t,int *t2t, int *t2n, int np,int nt);
+static void tupdate(const double *p,int *t,int *t2t, int *t2n, int np,int nt);
 
 int int_trisurfupd(Stack stack, int rhs, int opt, int lhs)
 {
   NspMatrix *P,*T,*T2t,*T2n;
   int nt,np;
   CheckRhs (4,4);
-  CheckLhs (0,1);
+  CheckLhs (0,3);
   if ((T = GetRealMatCopyInt (stack, 1)) == NULLMAT) return RET_BUG;
   if ((T2t = GetRealMatCopyInt (stack, 2)) == NULLMAT) return RET_BUG;
-  if ((T2n = GetRealMatCopy (stack, 3)) == NULLMAT) return RET_BUG;
+  if ((T2n = GetRealMatCopyInt (stack, 3)) == NULLMAT) return RET_BUG;
   if ((P = GetRealMatCopy (stack, 4)) == NULLMAT) return RET_BUG;
   nt = T->n;
   np = T2n->n;
   tupdate(P->R,T->I,T2t->I, T2n->I,np,nt);
-  MoveObj(stack,1,NSP_OBJECT(P));
-  return 1;
+  MoveObj(stack,1,NSP_OBJECT(T));
+  if (lhs >= 2 ) MoveObj(stack,2,NSP_OBJECT(T2t));
+  if (lhs >= 2 ) MoveObj(stack,3,NSP_OBJECT(T2n));
+  return Max(lhs,1);
 }
 
 #if 0
@@ -50,7 +52,7 @@ static double triarea(double *p1,double *p2,double *p3)
 }
 #endif
 
-static void trinormal3(double *p1,double *p2,double *p3,double *n)
+static void trinormal3(const double *p1,const double *p2,const double *p3,double *n)
 {
   double d12[3]={ p2[0]-p1[0], p2[1]-p1[1], p2[2]-p1[2] };
   double d13[3]={ p3[0]-p1[0], p3[1]-p1[1], p3[2]-p1[2] };
@@ -60,7 +62,7 @@ static void trinormal3(double *p1,double *p2,double *p3,double *n)
   n[0]/=nnorm; n[1]/=nnorm; n[2]/=nnorm;
 }
 
-static double triqual3(double *p1,double *p2,double *p3)
+static double triqual3(const double *p1,const double *p2,const double *p3)
 {
   double n[3];
   double d12[3]={ p2[0]-p1[0], p2[1]-p1[1], p2[2]-p1[2] };
@@ -72,7 +74,7 @@ static double triqual3(double *p1,double *p2,double *p3)
   return 6.928203230275509*vol/den;
 }
 
-static void tupdate(double *p,int *t,int *t2t, int *t2n, int np,int nt)
+static void tupdate(const double *p,int *t,int *t2t, int *t2n, int np,int nt)
 {
   for (int t1=0; t1<nt; t1++)
     for (int n1=0; n1<3; n1++) {

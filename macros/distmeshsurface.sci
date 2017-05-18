@@ -16,8 +16,8 @@ function [p, t]=distmeshsurface(fd,fh,h0,bbox,varargin)
 //      FPARAMS:   Additional parameters passed to FD and FH
 //
 //   Example: (Uniform Mesh on Unit Sphere)
-//      fd=@(p) dsphere(p,0,0,0,1);
-//      [p,t]=distmeshsurface(fd,@huniform,0.2,1.1*[-1,-1,-1;1,1,1]);
+//      function y=fd(p); y=dsphere(p,0,0,0,1);endfunction
+//      [p,t]=distmeshsurface(fd, huniform,0.2,1.1*[-1,-1,-1;1,1,1]);
 //
 //   Example: (Graded Mesh on Unit Sphere)
 //      fd=@(p) dsphere(p,0,0,0,1);
@@ -33,23 +33,34 @@ function [p, t]=distmeshsurface(fd,fh,h0,bbox,varargin)
 //      [p,t]=distmeshsurface(fd,@huniform,0.2,[-2.1,-1.1,-1.6; 2.1,1.1,1.6]);
   
 //   Copyright (C) 2004-2012 Per-Olof Persson. See COPYRIGHT.TXT for details.
-
-  printf("Revoir  trisurfupd pour mettre des types entiers \n");
   
-  dptol = 1e-4;ttol = .1;Fscale = 1.2;deltat = .2;deps = sqrt(eps) * h0;
+  dptol = 1e-4;ttol = .1;Fscale = 1.2;deltat = .2;deps = sqrt(%eps) * h0;
   
   // 1. Create initial distribution in bounding box (isosurface from grid)
-  [x,y,z] = ndgrid((bbox(1, 1) : h0 : bbox(2, 1)), (bbox(1, 2) : h0 : bbox( ...
-      2, 2)),  ...
-		   (bbox(1, 3) : h0 : bbox(2, 3)));
-  pv = isosurface(x, y, z, reshape(fd([x(:),y(:),z(:)], varargin{:}),  ...
-				   size(x)), 0);
-  p = pv.vertices;
-  t = pv.faces;
-  
+  if %f then 
+    [x,y,z] = ndgrid((bbox(1, 1) : h0 : bbox(2, 1)), (bbox(1, 2) : h0 : bbox(2, 2)), (bbox(1, 3) : h0 : bbox(2, 3)));
+    pv = isosurface(x, y, z, reshape(fd([x(:),y(:),z(:)], varargin(:)), size(x)), 0);
+    p = pv.vertices;
+    t = pv.faces;
+  else
+    // using isosurf3d from enrico 
+    x= bbox(1, 1) : h0 : bbox(2, 1); nx=length(x);
+    y= bbox(1, 2) : h0 : bbox(2, 2); ny=length(y);
+    z= bbox(1, 3) : h0 : bbox(2, 3); nz=length(z);
+    s= cell(1,nz);
+    [X,Y]=ndgrid(x,y);nX = size(X,'*');
+    for i=1:nz; s{i} = reshape(fd([X(:),Y(:),z(i)*ones(nX,1)],varargin(:)),size(X)); end
+    [xx,yy,zz]=isosurf3d(x,y,z,s,0);
+    // Il faut trouver f et pts 
+    // f de taille Nx3: N triangles, chaque ligne décrit un triangle 
+    // pts de taille Mx3 pts(i,:) coordonnées du point i 
+    [p,tp]=facets_to_faces(xx,yy,zz,0*zz);
+    t = tp';
+  end
+    
   // Connectivities (for trisurfupd)
   [t2t,t2n] = mkt2t(t);
-  t2t = int32(t2t - 1)';t2n = int8(t2n - 1)';
+  t2t = (t2t - 1)';t2n =(t2n - 1)';
   
   N = size(p, 1); // Number of points N
   pold = %inf; // For first iteration
@@ -58,41 +69,48 @@ function [p, t]=distmeshsurface(fd,fh,h0,bbox,varargin)
     // 3. Retriangulation
     if max(sqrt(sum((p - pold) .^ 2, 2)) / h0) > ttol // Any large movement?
       pold = p; // Save current positions
-      [t,t2t,t2n] = trisurfupd(int32(t - 1)', t2t, t2n, p');
+      [t,t2t,t2n] = trisurfupd((t - 1)', t2t, t2n, p');
       // Update triangles
-      t = double(t + 1)';
+      t = (t + 1)';
       pmid = (p(t(:, 1), :) + p(t(:, 2), :) + p(t(:, 3), :)) / 3;
       // Compute centroids
       // 4. Describe each bar by a unique pair of nodes
       bars = [t(:, [1,2]);t(:, [1,3]);t(:, [2,3])];
       // Interior bars duplicated
-      bars = unique(sort(bars,type="c",dir="i"), 'rows'); // Bars as node pairs
+      bars = unique(sort(bars,type="c",dir="i"), which = 'rows'); // Bars as node pairs
       // 5. Graphical output of the current mesh
       clf,
-      patch('faces', t, 'vertices', p, 'facecol', [.8,.9,1], 'edgecol', 'k');
+      // patch('faces', t, 'vertices', p, 'facecol', [.8,.9,1], 'edgecol', 'k');
+      if size(p,2)<>3 then 
+	printf("To be done\n");
+      else
+	trisurf(t',p(:,1),p(:,2),p(:,3));
+      end
       axis('equal')
-      axis('off');view(3);cameramenu;drawnow
+      axis('off');// view(3);cameramenu;drawnow
+      xpause(10000,%t);
     end
     
     // 6. Move mesh points based on bar lengths L and forces F
     barvec = p(bars(:, 1), :) - p(bars(:, 2), :); // List of bar vectors
     L = sqrt(sum(barvec .^ 2, 2)); // L = Bar lengths
-    hbars = feval(fh, (p(bars(:, 1), :) + p(bars(:, 2), :)) / 2, varargin{:});
+    hbars = fh( (p(bars(:, 1), :) + p(bars(:, 2), :)) / 2, varargin(:));
     L0 = hbars * Fscale * sqrt(sum(L .^ 2) / sum(hbars .^ 2));
     // L0 = Desired lengths
     F = max(L0 - L, 0); // Bar forces (scalars)
     Fvec = F  ./ L * [1,1,1]  .* barvec; // Bar forces (x,y,z components)
-    Ftot = full(sparse(bars(:, [1,1,1,2,2,2]), ones(size(F)) * [1,2,3,1,2,3],  ...
-		       [Fvec,-Fvec], N, 3));
+
+    Is=bars(:, [1,1,1,2,2,2]), Js= ones(size(F)) * [1,2,3,1,2,3]; Fs= [Fvec,-Fvec];
+    Ftot = full(sparse([Is(:),Js(:)], Fs(:), [N,3]));
     p = p + deltat * Ftot; // Update node positions
     
     // 7. Bring all points back to the boundary
-    d = feval(fd, p, varargin{:});
-    dgradx = (feval(fd, [p(:, 1) + deps,p(:, 2),p(:, 3)], varargin{:}) - d) / deps;
+    d = fd(p, varargin(:));
+    dgradx = ( fd( [p(:, 1) + deps,p(:, 2),p(:, 3)], varargin(:)) - d) / deps;
     // Numerical
-    dgrady = (feval(fd, [p(:, 1),p(:, 2) + deps,p(:, 3)], varargin{:}) - d) / deps;
+    dgrady = ( fd( [p(:, 1),p(:, 2) + deps,p(:, 3)], varargin(:)) - d) / deps;
     // gradient
-    dgradz = (feval(fd, [p(:, 1),p(:, 2),p(:, 3) + deps], varargin{:}) - d) / deps;
+    dgradz = ( fd( [p(:, 1),p(:, 2),p(:, 3) + deps], varargin(:)) - d) / deps;
     //
     dgrad2 = dgradx .^ 2 + dgrady .^ 2 + dgradz .^ 2;
     p = p - [d  .* dgradx  ./ dgrad2,d  .* dgrady  ./ dgrad2, ...
