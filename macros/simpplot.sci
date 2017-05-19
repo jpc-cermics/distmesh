@@ -1,6 +1,13 @@
 function simpplot(p,t,expr,bcol,icol,nodes,tris)
 //   Copyright (C) 2004-2012 Per-Olof Persson. See COPYRIGHT.TXT for details.
-  
+
+  function [I]=ismember(A,B)
+  // quick implementation 
+    [C,kA]=intersect(A,B);
+    I=zeros(size(A));
+    I(kA)=1;
+  endfunction
+
   dim = size(p, 2);
   select dim 
    case 2
@@ -17,20 +24,22 @@ function simpplot(p,t,expr,bcol,icol,nodes,tris)
       tris = 0;
     end
     printf("Revoir facecolor et edgecolor\n");
-    trimesh(t, p(:, 1), p(:, 2), 0 * p(:, 1))// 'facecolor', bcol, 'edgecolor','k');
-    if nodes == 1
-      line(p(:, 1), p(:, 2), 'linest', 'none', 'marker', '.', 'col', icol, 'markers', 24);
-    elseif nodes == 2
-      for ip = 1: size(p, 1)
-	txtpars = {'fontname','times','fontsize',12};
-	text(p(ip, 1), p(ip, 2), num2str(ip), txtpars{:});
+    triplot(t, p(:, 1), p(:, 2));// 0 * p(:, 1))// 'facecolor', bcol, 'edgecolor','k');
+    if %f then 
+      if nodes == 1
+	line(p(:, 1), p(:, 2), 'linest', 'none', 'marker', '.', 'col', icol, 'markers', 24);
+      elseif nodes == 2
+	for ip = 1: size(p, 1)
+	  txtpars = {'fontname','times','fontsize',12};
+	  text(p(ip, 1), p(ip, 2), num2str(ip), txtpars{:});
+	end
       end
-    end
-    if tris == 2
-      for it = 1: size(t, 1)
-	pmid = mean(p(t(it, :), :), 1);
-	txtpars = {'fontname','times','fontsize',12,'horizontala','center'};
-	text(pmid(1), pmid(2), num2str(it), txtpars{:});
+      if tris == 2
+	for it = 1: size(t, 1)
+	  pmid = mean(p(t(it, :), :), 1);
+	  txtpars = {'fontname','times','fontsize',12,'horizontala','center'};
+	  text(pmid(1), pmid(2), num2str(it), txtpars{:});
+	end
       end
     end
     // view(2)
@@ -74,9 +83,3 @@ function simpplot(p,t,expr,bcol,icol,nodes,tris)
   end
 endfunction
 
-function [I]=ismember(A,B)
-// quick implementation 
-  [C,kA]=intersect(A,B);
-  I=zeros(size(A));
-  I(kA)=1;
-endfunction

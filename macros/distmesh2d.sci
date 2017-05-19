@@ -97,7 +97,7 @@ function [p, t]=distmesh2d(fd,fh,h0,bbox,pfix,varargin)
       // 5. Graphical output of the current mesh
       // cla,
       // patch('vertices', p, 'faces', t, 'edgecol', 'k', 'facecol', [.8,.9,1]);
-      printf("A revoir\n");
+      // printf("A revoir\n");
       if size(p,2) == 2 then 
 	triplot(t,p(:,1),p(:,2));
       else
@@ -143,9 +143,7 @@ function [p, t]=distmesh2d(fd,fh,h0,bbox,pfix,varargin)
       break;
     end
   end
-  pause fin 
   // Clean up and plot final mesh
-  printf("fixmesh a revoir unique de matlab n''est pas identique a unique de nsp\n");
   [p,t] = fixmesh(p, t);
   simpplot(p, t)
 endfunction

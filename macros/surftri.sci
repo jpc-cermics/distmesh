@@ -10,10 +10,9 @@ function tri=surftri(p,t)
            t(:, [2,3,4])];
   node4 = [t(:, 4);t(:, 3);t(:, 2);t(:, 1)];
   faces = sort(faces,type="c",dir="i");
-  // printf("Attention: unique ne renvoit pas jx \n");
-  // unique suivi de histc c'est le occ de unique ?
-  // [foo,ix,jx] = unique(faces, which = 'rows');
-  // vec = histc(jx, (1 : max(jx)));
+  // [foo,ix,jx] = unique(faces, which = 'rows'; mtlb_mode=%t);
+  // vec = histc(jx, (1 : max(jx)));// [foo,vec]=bsearch(jx,1:max(jx),match = "v");
+  // <=> [foo,ix,vec]= unique(faces, which = 'rows') 
   [foo,ix,occ] = unique(faces, which = 'rows');
   qx = find(occ == 1);
   tri = faces(ix(qx), :);
@@ -26,3 +25,4 @@ function tri=surftri(p,t)
   ix = find(dot(cross(v1, v2, 2), v3, 2) > 0);
   tri(ix, [2,3]) = tri(ix, [3,2]);
 endfunction
+

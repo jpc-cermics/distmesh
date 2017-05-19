@@ -14,13 +14,10 @@ function [p, t, pix]=fixmesh(p,t,ptol)
   p = p(ix, :);
   if nargin >= 2
     t = reshape(jx(t), size(t));
-    pause fixmesh-a-revoir
-    printf("unique à revoir\n");
-    [pix,ix1,jx1] = unique(t);
+    [pix,ix1,jx1] = unique(t, mtlb_mode = %t);
     t = reshape(jx1, size(t));
     p = p(pix, :);
     pix = ix(pix);
-    
     if size(t, 2) == size(p, 2) + 1
       flip = simpvol(p, t) < 0;
       t(flip, [1,2]) = t(flip, [2,1]);
