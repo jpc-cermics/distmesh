@@ -84,7 +84,7 @@ function [p, t]=distmeshsurface(fd,fh,h0,bbox,varargin)
       if size(p,2)<>3 then 
 	printf("To be done\n");
       else
-	trisurf(t',p(:,1),p(:,2),p(:,3));
+	trisurf(t,p(:,1),p(:,2),p(:,3));
       end
       axis('equal')
       axis('off');// view(3);cameramenu;drawnow
