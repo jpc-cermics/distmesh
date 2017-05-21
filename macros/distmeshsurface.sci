@@ -64,6 +64,7 @@ function [p, t]=distmeshsurface(fd,fh,h0,bbox,varargin)
   
   N = size(p, 1); // Number of points N
   pold = %inf; // For first iteration
+  count=0;
   while 1
     p0 = p;
     // 3. Retriangulation
@@ -79,28 +80,28 @@ function [p, t]=distmeshsurface(fd,fh,h0,bbox,varargin)
       // Interior bars duplicated
       bars = unique(sort(bars,type="c",dir="i"), which = 'rows'); // Bars as node pairs
       // 5. Graphical output of the current mesh
-      clf,
+      clf(),
       // patch('faces', t, 'vertices', p, 'facecol', [.8,.9,1], 'edgecol', 'k');
       if size(p,2)<>3 then 
 	printf("To be done\n");
       else
-	trisurf(t,p(:,1),p(:,2),p(:,3));
+	trisurf(t,p(:,1),p(:,2),p(:,3),'axis','off', 'axis','equal');
+	title(sprintf('Retriangulation #%d',count));
       end
-      axis('equal')
-      axis('off');// view(3);cameramenu;drawnow
+      count = count +1;
       xpause(10000,%t);
     end
-    
+
     // 6. Move mesh points based on bar lengths L and forces F
     barvec = p(bars(:, 1), :) - p(bars(:, 2), :); // List of bar vectors
-    L = sqrt(sum(barvec .^ 2, 2)); // L = Bar lengths
+    L = max(sqrt(sum(barvec .^ 2, 2)),10*%eps); // L = Bar lengths
     hbars = fh( (p(bars(:, 1), :) + p(bars(:, 2), :)) / 2, varargin(:));
     L0 = hbars * Fscale * sqrt(sum(L .^ 2) / sum(hbars .^ 2));
     // L0 = Desired lengths
     F = max(L0 - L, 0); // Bar forces (scalars)
     Fvec = F  ./ L * [1,1,1]  .* barvec; // Bar forces (x,y,z components)
-
-    Is=bars(:, [1,1,1,2,2,2]), Js= ones(size(F)) * [1,2,3,1,2,3]; Fs= [Fvec,-Fvec];
+        
+    Is=bars(:, [1,1,1,2,2,2]); Js= ones(size(F)) * [1,2,3,1,2,3]; Fs= [Fvec,-Fvec];
     Ftot = full(sparse([Is(:),Js(:)], Fs(:), [N,3]));
     p = p + deltat * Ftot; // Update node positions
     
