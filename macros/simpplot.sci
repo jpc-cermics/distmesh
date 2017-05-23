@@ -2,12 +2,13 @@ function simpplot(p,t,expr,bcol,icol,nodes,tris)
 //   Copyright (C) 2004-2012 Per-Olof Persson. See COPYRIGHT.TXT for details.
 
   function [I]=ismember(A,B)
-  // quick implementation 
-    [C,kA]=intersect(A,B);
+  // quick implementation
     I=zeros(size(A));
-    I(kA)=1;
+    for i=1:size(B,'*');
+      I(find(A==B(i)))=1;
+    end
   endfunction
-
+  
   dim = size(p, 2);
   select dim 
    case 2
@@ -53,7 +54,6 @@ function simpplot(p,t,expr,bcol,icol,nodes,tris)
     if nargin < 5 || isempty(icol),
       icol = [.9,.8,1];
     end
-    
     if size(t, 2) == 4
       tri1 = surftri(p, t);
       if nargin > 2 && ~isempty(expr)
@@ -62,9 +62,8 @@ function simpplot(p,t,expr,bcol,icol,nodes,tris)
 	tri1 = tri1(any(ismember(tri1, incl), 2), :);
 	tri2 = surftri(p, t);
 	tri2 = setdiff(tri2, tri1, which= 'rows');
-	trimesh(tri2, p(:, 1), p(:, 2), p(:, 3));
-	//set(h, 'facecolor', icol, 'edgecolor', 'k');
-	hold('on')
+	trisurf(tri2,p,colormap='green');
+	hold('on');
       end
     else 
       tri1 = t;
@@ -73,7 +72,7 @@ function simpplot(p,t,expr,bcol,icol,nodes,tris)
 	tri1 = tri1(any(ismember(tri1, incl), 2), :);
       end
     end
-    trimesh(tri1, p(:, 1), p(:, 2), p(:, 3));
+    trisurf(tri1, p);
     hold('off')
     //set(h, 'facecolor', bcol, 'edgecolor', 'k');
     //axis('equal')
