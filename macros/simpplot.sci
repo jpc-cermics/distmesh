@@ -62,7 +62,7 @@ function simpplot(p,t,expr,bcol,icol,nodes,tris)
 	tri1 = tri1(any(ismember(tri1, incl), 2), :);
 	tri2 = surftri(p, t);
 	tri2 = setdiff(tri2, tri1, which= 'rows');
-	trisurf(tri2,p,colormap='green');
+	trisurf(tri2,[p,zeros(size(p,1),1)]);
 	hold('on');
       end
     else 
