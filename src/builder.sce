@@ -21,7 +21,7 @@ table =['dsegment','int_dsegment';
 	'dellipsoid','int_dellipsoid';
 	'trisurfupd','int_trisurfupd'];
 
-ldflags =""// "`pkg-config lp_solve --libs`";
+ldflags ="-llapack"// "`pkg-config lp_solve --libs`";
 cflags = ""// "`pkg-config lp_solve --cflags`"
 
 // do not modify below 
