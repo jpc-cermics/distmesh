@@ -18,9 +18,8 @@ all::
 	@if test -f Makelib; then \
 		$(MAKE) -s -f Makelib $(MFLAGS); \
 	fi
-	@echo "running builder for $(NAME) blocks (be patient)"; \
-		$(NSP) -nw -e "exec('builder.sce');quit" -errcatch > /dev/null ; \
-	fi
+	@echo "running builder"; \
+		$(NSP) -nw -e "exec('builder.sce');quit" -errcatch > /dev/null ;
 
 tests	:: all
 
